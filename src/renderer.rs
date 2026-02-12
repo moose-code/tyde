@@ -5,9 +5,10 @@ use crate::chart;
 use crate::color;
 use crate::scene;
 use crate::station::TideStation;
+use crate::sun;
 use crate::tide::{self, TideDirection};
 
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Datelike, Local};
 
 /// Render one complete frame to the terminal.
 pub fn render_frame(
@@ -34,8 +35,15 @@ pub fn render_frame(
     let tide_dir = tide::direction(station, now);
     let extreme = tide::next_extreme(station, now);
 
-    // Layout: 1 line info bar, then ocean scene, then chart (4 rows + 1 x-axis)
-    let chart_rows: u16 = 5;
+    // Compute daylight for the scene
+    let station_h = chart::station_hour(station, now);
+    let tz = station.timezone();
+    let station_now = now.with_timezone(&tz);
+    let day_of_year = station_now.ordinal();
+    let daylight = sun::compute_daylight(station.lat, station.lon, station.utc_offset_minutes, day_of_year, station_h);
+
+    // Layout: 1 line info bar, then ocean scene, then chart
+    let chart_rows: u16 = 7;
     let scene_height = height.saturating_sub(1 + chart_rows);
     let scene_height = scene_height.max(3);
 
@@ -43,7 +51,7 @@ pub fn render_frame(
     render_info_bar(stdout, width, tide_height, tide_dir, &extreme, now, station)?;
 
     // --- Ocean scene (rows 1..1+scene_height) ---
-    let grid = scene::render_scene(width, scene_height, tide_height, time_secs);
+    let grid = scene::render_scene(width, scene_height, tide_height, time_secs, &daylight);
     for (r, row) in grid.iter().enumerate() {
         queue!(stdout, cursor::MoveTo(0, 1 + r as u16))?;
         let mut prev_fg = Color::Reset;
@@ -160,6 +168,15 @@ fn render_info_bar(
     Ok(())
 }
 
+/// Color category for each x-axis character.
+#[derive(Clone, Copy, PartialEq)]
+enum XCharKind {
+    Axis,
+    NowMarker,
+    Sunrise,
+    Sunset,
+}
+
 fn render_tide_chart(
     stdout: &mut io::Stdout,
     width: u16,
@@ -179,6 +196,14 @@ fn render_tide_chart(
     let (lines, now_col) = chart::render_chart(station, now, chart_width, chart_height);
     let y_labels = chart::y_axis_labels(station, chart_height, now);
 
+    // Compute sunrise/sunset column positions
+    let tz = station.timezone();
+    let station_now = now.with_timezone(&tz);
+    let day_of_year = station_now.ordinal();
+    let sun_times = sun::sunrise_sunset(station.lat, station.lon, station.utc_offset_minutes, day_of_year);
+    let sunrise_col = sun_times.map(|(sr, _)| ((sr / 24.0) * chart_width as f64) as usize);
+    let sunset_col = sun_times.map(|(_, ss)| ((ss / 24.0) * chart_width as f64) as usize);
+
     let bg = Color::Rgb { r: 8, g: 8, b: 20 };
 
     for (i, line) in lines.iter().enumerate() {
@@ -194,21 +219,20 @@ fn render_tide_chart(
             style::Print(format!("{:>5}", label)),
         )?;
 
-        // Chart content — highlight the "now" column
+        // Chart content — color by: now marker > sunrise/sunset > day/night
         for (j, ch) in line.chars().enumerate() {
-            if j == now_col {
-                queue!(
-                    stdout,
-                    style::SetForegroundColor(color::CHART_MARKER),
-                    style::Print(ch),
-                )?;
+            let fg = if j == now_col {
+                color::CHART_MARKER
+            } else if sunrise_col == Some(j) {
+                color::CHART_SUNRISE
+            } else if sunset_col == Some(j) {
+                color::CHART_SUNSET
+            } else if is_night_col(j, sunrise_col, sunset_col, chart_width) {
+                color::CHART_CURVE_NIGHT
             } else {
-                queue!(
-                    stdout,
-                    style::SetForegroundColor(color::CHART_CURVE),
-                    style::Print(ch),
-                )?;
-            }
+                color::CHART_CURVE
+            };
+            queue!(stdout, style::SetForegroundColor(fg), style::Print(ch))?;
         }
 
         // Fill remaining
@@ -218,7 +242,7 @@ fn render_tide_chart(
         }
     }
 
-    // X-axis labels
+    // --- X-axis ---
     let xaxis_row = top + chart_height as u16;
     queue!(
         stdout,
@@ -228,8 +252,10 @@ fn render_tide_chart(
         style::Print(format!("{:>5}", "")),
     )?;
 
-    // Build x-axis string with hour labels and ▲ now marker
-    let mut x_chars: Vec<(char, bool)> = vec![(' ', false); chart_width]; // (char, is_now_marker)
+    // Build x-axis: hour labels, then sunrise/sunset labels, then ▲ now marker (highest priority)
+    let mut x_axis: Vec<(char, XCharKind)> = vec![(' ', XCharKind::Axis); chart_width];
+
+    // Layer 1: hour labels (00, 06, 12, 18, 24)
     let spacing = chart_width / 4;
     for i in 0..=4 {
         let hour = i * 6;
@@ -237,25 +263,56 @@ fn render_tide_chart(
         let label = format!("{:02}", hour);
         for (k, ch) in label.chars().enumerate() {
             if pos + k < chart_width {
-                x_chars[pos + k] = (ch, false);
+                x_axis[pos + k] = (ch, XCharKind::Axis);
             }
         }
     }
 
-    // Place ▲ at the current time position (in station-local time)
+    // Layer 2: sunrise label "↑HH:MM"
+    if let Some((sr, _)) = sun_times {
+        let sr_h = sr as u32;
+        let sr_m = ((sr - sr_h as f64) * 60.0) as u32;
+        let label = format!("↑{:02}:{:02}", sr_h, sr_m);
+        let pos = ((sr / 24.0) * chart_width as f64) as usize;
+        // center the label on the position
+        let start = pos.saturating_sub(label.chars().count() / 2);
+        for (k, ch) in label.chars().enumerate() {
+            if start + k < chart_width {
+                x_axis[start + k] = (ch, XCharKind::Sunrise);
+            }
+        }
+    }
+
+    // Layer 3: sunset label "↓HH:MM"
+    if let Some((_, ss)) = sun_times {
+        let ss_h = ss as u32;
+        let ss_m = ((ss - ss_h as f64) * 60.0) as u32;
+        let label = format!("↓{:02}:{:02}", ss_h, ss_m);
+        let pos = ((ss / 24.0) * chart_width as f64) as usize;
+        let start = pos.saturating_sub(label.chars().count() / 2);
+        for (k, ch) in label.chars().enumerate() {
+            if start + k < chart_width {
+                x_axis[start + k] = (ch, XCharKind::Sunset);
+            }
+        }
+    }
+
+    // Layer 4: ▲ now marker (always wins)
     let now_hour_f = chart::station_hour(station, now);
     let now_marker_pos = (now_hour_f / 24.0 * chart_width as f64) as usize;
     if now_marker_pos < chart_width {
-        x_chars[now_marker_pos] = ('▲', true);
+        x_axis[now_marker_pos] = ('▲', XCharKind::NowMarker);
     }
 
     // Render x-axis
-    for &(ch, is_marker) in &x_chars {
-        if is_marker {
-            queue!(stdout, style::SetForegroundColor(color::CHART_MARKER), style::Print(ch))?;
-        } else {
-            queue!(stdout, style::SetForegroundColor(color::CHART_AXIS), style::Print(ch))?;
-        }
+    for &(ch, kind) in &x_axis {
+        let fg = match kind {
+            XCharKind::Axis => color::CHART_AXIS,
+            XCharKind::NowMarker => color::CHART_MARKER,
+            XCharKind::Sunrise => color::CHART_SUNRISE,
+            XCharKind::Sunset => color::CHART_SUNSET,
+        };
+        queue!(stdout, style::SetForegroundColor(fg), style::Print(ch))?;
     }
 
     // Fill remaining
@@ -265,4 +322,17 @@ fn render_tide_chart(
     }
 
     Ok(())
+}
+
+/// Returns true if this chart column falls during nighttime hours.
+fn is_night_col(
+    col: usize,
+    sunrise_col: Option<usize>,
+    sunset_col: Option<usize>,
+    _chart_width: usize,
+) -> bool {
+    match (sunrise_col, sunset_col) {
+        (Some(sr), Some(ss)) => col < sr || col > ss,
+        _ => false, // no sunrise/sunset data — treat as all day
+    }
 }

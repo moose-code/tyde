@@ -4,6 +4,7 @@ mod geolocation;
 mod renderer;
 mod scene;
 mod station;
+mod sun;
 mod terminal;
 mod tide;
 

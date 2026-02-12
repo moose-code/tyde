@@ -1,6 +1,7 @@
 use crossterm::style::Color;
 
 use crate::color;
+use crate::sun::DaylightInfo;
 
 /// A single cell in the scene buffer.
 #[derive(Clone, Copy)]
@@ -35,7 +36,8 @@ fn cell_hash(row: u16, col: u16, tick: u32) -> f64 {
 /// - `width`, `height`: terminal cell dimensions for the ocean area
 /// - `tide_height`: current tide in metres (typically 0.0–2.0)
 /// - `time_secs`: monotonic seconds (for animation)
-pub fn render_scene(width: u16, height: u16, tide_height: f64, time_secs: f64) -> Vec<Vec<Cell>> {
+/// - `daylight`: brightness and warmth for day/night cycle
+pub fn render_scene(width: u16, height: u16, tide_height: f64, time_secs: f64, daylight: &DaylightInfo) -> Vec<Vec<Cell>> {
     let w = width as usize;
     let h = height as usize;
     let mut grid = vec![vec![Cell::default(); w]; h];
@@ -169,7 +171,12 @@ pub fn render_scene(width: u16, height: u16, tide_height: f64, time_secs: f64) -
                 }
             };
 
-            grid[row][col] = cell;
+            // Apply day/night lighting
+            grid[row][col] = Cell {
+                ch: cell.ch,
+                fg: color::apply_daylight(cell.fg, daylight),
+                bg: color::apply_daylight(cell.bg, daylight),
+            };
         }
     }
 
