@@ -2,19 +2,7 @@
 
 A live ASCII ocean tide visualizer for your terminal. Real tidal physics, 25 worldwide stations, day/night cycle — no API keys, runs almost entirely offline.
 
-```
- TIDE  San Francisco, US  |  Height: 1.23m  |  Rising  |  Next High: 1.58m @ 14:32 (2h 10m)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)))]]*::.' .
-~~~~~~~~~~~~~~~~~~~~~~~~~~)))]]**::'  .
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)))]]*:.     .
-~~~~~~~~~~~~~~~~~~~~~~~~~~~)))]]**:'  .
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)))*:'.
-  1.6m ⠀⠀⠀⠀⠀⠀⢀⡠⠤⠤⢄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⠤⠤⢄⡀
-  1.2m ⠀⠀⠀⢀⡔⠉⠀⠀⠀⠀⠀⠉⠢⡀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡔⠉⠀⠀⠀⠀⠀⠉⠢⡀
-  0.9m ⠀⡠⠊⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠢⡀⠀⠀⠀⠀⡠⠊⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈
-  0.5m ⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠢⠤⠔⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-       00  ↑06:48  12   ▲  ↓17:42  24
-```
+![tyde preview](preview-tyde.gif)
 
 ## What it does
 
