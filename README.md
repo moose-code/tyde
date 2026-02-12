@@ -1,6 +1,6 @@
 # tyde
 
-A live ASCII ocean tide visualizer for your terminal. Real tidal physics, 25 worldwide stations, day/night cycle — no API keys, runs almost entirely offline.
+A live ASCII ocean tide visualizer for your terminal. Real tidal physics, 50+ worldwide stations, day/night cycle — no API keys, runs almost entirely offline.
 
 ![tyde preview](preview-tyde.gif)
 
@@ -10,7 +10,7 @@ A live ASCII ocean tide visualizer for your terminal. Real tidal physics, 25 wor
 - Braille-dot tide chart showing the full 24-hour curve with current position marker
 - Sunrise and sunset times marked on the chart in gold/orange
 - Day/night lighting cycle — golden hour warmth at sunset, dark blue tint at night
-- Auto-detects your location and picks the nearest of 25 coastal stations
+- Auto-detects your location and picks the nearest of 50+ coastal stations
 - All predictions computed locally with harmonic tidal analysis — no tide data APIs
 
 ## Install
@@ -45,7 +45,7 @@ cargo install tyde
 ```bash
 tyde                           # auto-detect location, show nearest station
 tyde --station "tokyo"         # pick a station by name (partial match)
-tyde --list-stations           # print all 25 stations
+tyde --list-stations           # print all 52 stations
 tyde --offline                 # skip geolocation, use default (Cape Town)
 ```
 
@@ -53,16 +53,22 @@ Press `q` or `Esc` to quit.
 
 ## Stations
 
-25 coastal stations covering all major coastlines:
+52 coastal stations covering all major coastlines:
 
 | Region | Stations |
 |--------|----------|
-| North America | New York, Boston, Miami, San Francisco, Los Angeles, Seattle, Honolulu, Vancouver, Halifax |
-| Europe | London, Lisbon, Amsterdam, Reykjavik |
-| Asia | Tokyo, Shanghai, Mumbai, Singapore, Hong Kong, Dubai |
-| Oceania | Sydney, Auckland |
+| North America | New York, Boston, Miami, San Francisco, Los Angeles, Seattle, Anchorage, Honolulu, Vancouver, Halifax |
+| Caribbean & Central America | San Juan, Havana, Panama City |
 | South America | Buenos Aires, Rio de Janeiro, Valparaiso |
-| Africa | Cape Town |
+| Europe — Atlantic | London, Lisbon, Amsterdam, Reykjavik |
+| Europe — Mediterranean | Barcelona, Marseille, Naples, Athens, Istanbul |
+| Europe — Scandinavia/Baltic | Oslo, Copenhagen, Stockholm |
+| Africa | Cape Town, Lagos, Accra, Mombasa, Dar es Salaam |
+| Middle East | Dubai |
+| South Asia | Mumbai, Chennai, Colombo, Karachi |
+| East Asia | Tokyo, Shanghai, Hong Kong |
+| Southeast Asia | Singapore, Bangkok, Manila, Jakarta, Ho Chi Minh City |
+| Oceania | Sydney, Melbourne, Perth, Darwin, Auckland, Suva |
 
 ## How it works
 

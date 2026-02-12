@@ -32,7 +32,7 @@ pub const SPEEDS: [f64; 5] = [
     13.943, // O1
 ];
 
-/// Bundled database of ~25 coastal tide stations worldwide.
+/// Bundled database of ~50 coastal tide stations worldwide.
 pub const STATIONS: &[TideStation] = &[
     // Africa
     TideStation {
@@ -47,6 +47,62 @@ pub const STATIONS: &[TideStation] = &[
             Constituent { amplitude: 0.10, phase: 148.0 },
             Constituent { amplitude: 0.06, phase: 210.0 },
             Constituent { amplitude: 0.05, phase: 195.0 },
+        ],
+    },
+    TideStation {
+        name: "Lagos, NG",
+        lat: 6.4,
+        lon: 3.4,
+        z0: 0.60,
+        utc_offset_minutes: 60, // UTC+1
+        constituents: [
+            Constituent { amplitude: 0.38, phase: 30.0 },
+            Constituent { amplitude: 0.14, phase: 55.0 },
+            Constituent { amplitude: 0.08, phase: 10.0 },
+            Constituent { amplitude: 0.05, phase: 110.0 },
+            Constituent { amplitude: 0.04, phase: 90.0 },
+        ],
+    },
+    TideStation {
+        name: "Mombasa, KE",
+        lat: -4.0,
+        lon: 39.7,
+        z0: 1.60,
+        utc_offset_minutes: 180, // UTC+3
+        constituents: [
+            Constituent { amplitude: 1.06, phase: 338.0 },
+            Constituent { amplitude: 0.50, phase: 5.0 },
+            Constituent { amplitude: 0.22, phase: 315.0 },
+            Constituent { amplitude: 0.22, phase: 45.0 },
+            Constituent { amplitude: 0.14, phase: 25.0 },
+        ],
+    },
+    TideStation {
+        name: "Dar es Salaam, TZ",
+        lat: -6.8,
+        lon: 39.3,
+        z0: 1.80,
+        utc_offset_minutes: 180, // UTC+3
+        constituents: [
+            Constituent { amplitude: 1.15, phase: 340.0 },
+            Constituent { amplitude: 0.52, phase: 8.0 },
+            Constituent { amplitude: 0.24, phase: 318.0 },
+            Constituent { amplitude: 0.20, phase: 48.0 },
+            Constituent { amplitude: 0.13, phase: 28.0 },
+        ],
+    },
+    TideStation {
+        name: "Accra, GH",
+        lat: 5.5,
+        lon: -0.2,
+        z0: 0.55,
+        utc_offset_minutes: 0, // UTC+0
+        constituents: [
+            Constituent { amplitude: 0.34, phase: 35.0 },
+            Constituent { amplitude: 0.12, phase: 58.0 },
+            Constituent { amplitude: 0.07, phase: 12.0 },
+            Constituent { amplitude: 0.04, phase: 105.0 },
+            Constituent { amplitude: 0.03, phase: 85.0 },
         ],
     },
     // North America — East Coast
@@ -192,6 +248,120 @@ pub const STATIONS: &[TideStation] = &[
             Constituent { amplitude: 0.06, phase: 145.0 },
         ],
     },
+    // Europe — Mediterranean
+    TideStation {
+        name: "Barcelona, ES",
+        lat: 41.4,
+        lon: 2.2,
+        z0: 0.15,
+        utc_offset_minutes: 60, // UTC+1
+        constituents: [
+            Constituent { amplitude: 0.06, phase: 240.0 },
+            Constituent { amplitude: 0.03, phase: 270.0 },
+            Constituent { amplitude: 0.01, phase: 218.0 },
+            Constituent { amplitude: 0.04, phase: 80.0 },
+            Constituent { amplitude: 0.03, phase: 60.0 },
+        ],
+    },
+    TideStation {
+        name: "Marseille, FR",
+        lat: 43.3,
+        lon: 5.4,
+        z0: 0.18,
+        utc_offset_minutes: 60, // UTC+1
+        constituents: [
+            Constituent { amplitude: 0.07, phase: 250.0 },
+            Constituent { amplitude: 0.03, phase: 280.0 },
+            Constituent { amplitude: 0.02, phase: 228.0 },
+            Constituent { amplitude: 0.04, phase: 85.0 },
+            Constituent { amplitude: 0.03, phase: 65.0 },
+        ],
+    },
+    TideStation {
+        name: "Naples, IT",
+        lat: 40.8,
+        lon: 14.3,
+        z0: 0.20,
+        utc_offset_minutes: 60, // UTC+1
+        constituents: [
+            Constituent { amplitude: 0.09, phase: 260.0 },
+            Constituent { amplitude: 0.04, phase: 290.0 },
+            Constituent { amplitude: 0.02, phase: 238.0 },
+            Constituent { amplitude: 0.03, phase: 90.0 },
+            Constituent { amplitude: 0.02, phase: 70.0 },
+        ],
+    },
+    TideStation {
+        name: "Athens, GR",
+        lat: 37.9,
+        lon: 23.7,
+        z0: 0.12,
+        utc_offset_minutes: 120, // UTC+2
+        constituents: [
+            Constituent { amplitude: 0.05, phase: 280.0 },
+            Constituent { amplitude: 0.02, phase: 310.0 },
+            Constituent { amplitude: 0.01, phase: 258.0 },
+            Constituent { amplitude: 0.02, phase: 100.0 },
+            Constituent { amplitude: 0.02, phase: 80.0 },
+        ],
+    },
+    TideStation {
+        name: "Istanbul, TR",
+        lat: 41.0,
+        lon: 29.0,
+        z0: 0.10,
+        utc_offset_minutes: 180, // UTC+3
+        constituents: [
+            Constituent { amplitude: 0.03, phase: 290.0 },
+            Constituent { amplitude: 0.01, phase: 320.0 },
+            Constituent { amplitude: 0.01, phase: 268.0 },
+            Constituent { amplitude: 0.02, phase: 110.0 },
+            Constituent { amplitude: 0.01, phase: 90.0 },
+        ],
+    },
+    // Europe — Scandinavia / Baltic
+    TideStation {
+        name: "Oslo, NO",
+        lat: 59.9,
+        lon: 10.7,
+        z0: 0.14,
+        utc_offset_minutes: 60, // UTC+1
+        constituents: [
+            Constituent { amplitude: 0.10, phase: 35.0 },
+            Constituent { amplitude: 0.03, phase: 70.0 },
+            Constituent { amplitude: 0.02, phase: 12.0 },
+            Constituent { amplitude: 0.03, phase: 130.0 },
+            Constituent { amplitude: 0.02, phase: 110.0 },
+        ],
+    },
+    TideStation {
+        name: "Copenhagen, DK",
+        lat: 55.7,
+        lon: 12.6,
+        z0: 0.10,
+        utc_offset_minutes: 60, // UTC+1
+        constituents: [
+            Constituent { amplitude: 0.07, phase: 45.0 },
+            Constituent { amplitude: 0.02, phase: 78.0 },
+            Constituent { amplitude: 0.01, phase: 22.0 },
+            Constituent { amplitude: 0.02, phase: 140.0 },
+            Constituent { amplitude: 0.02, phase: 120.0 },
+        ],
+    },
+    TideStation {
+        name: "Stockholm, SE",
+        lat: 59.3,
+        lon: 18.1,
+        z0: 0.05,
+        utc_offset_minutes: 60, // UTC+1
+        constituents: [
+            Constituent { amplitude: 0.02, phase: 50.0 },
+            Constituent { amplitude: 0.01, phase: 82.0 },
+            Constituent { amplitude: 0.01, phase: 28.0 },
+            Constituent { amplitude: 0.01, phase: 145.0 },
+            Constituent { amplitude: 0.01, phase: 125.0 },
+        ],
+    },
     // Asia
     TideStation {
         name: "Tokyo, JP",
@@ -263,6 +433,105 @@ pub const STATIONS: &[TideStation] = &[
             Constituent { amplitude: 0.22, phase: 170.0 },
         ],
     },
+    TideStation {
+        name: "Bangkok, TH",
+        lat: 13.5,
+        lon: 100.6,
+        z0: 1.10,
+        utc_offset_minutes: 420, // UTC+7
+        constituents: [
+            Constituent { amplitude: 0.40, phase: 310.0 },
+            Constituent { amplitude: 0.18, phase: 340.0 },
+            Constituent { amplitude: 0.08, phase: 288.0 },
+            Constituent { amplitude: 0.35, phase: 170.0 },
+            Constituent { amplitude: 0.25, phase: 150.0 },
+        ],
+    },
+    TideStation {
+        name: "Manila, PH",
+        lat: 14.6,
+        lon: 120.9,
+        z0: 0.60,
+        utc_offset_minutes: 480, // UTC+8
+        constituents: [
+            Constituent { amplitude: 0.22, phase: 300.0 },
+            Constituent { amplitude: 0.10, phase: 330.0 },
+            Constituent { amplitude: 0.05, phase: 278.0 },
+            Constituent { amplitude: 0.28, phase: 185.0 },
+            Constituent { amplitude: 0.20, phase: 165.0 },
+        ],
+    },
+    TideStation {
+        name: "Jakarta, ID",
+        lat: -6.1,
+        lon: 106.8,
+        z0: 0.45,
+        utc_offset_minutes: 420, // UTC+7
+        constituents: [
+            Constituent { amplitude: 0.15, phase: 315.0 },
+            Constituent { amplitude: 0.06, phase: 345.0 },
+            Constituent { amplitude: 0.03, phase: 293.0 },
+            Constituent { amplitude: 0.25, phase: 180.0 },
+            Constituent { amplitude: 0.18, phase: 160.0 },
+        ],
+    },
+    TideStation {
+        name: "Ho Chi Minh City, VN",
+        lat: 10.8,
+        lon: 106.7,
+        z0: 1.60,
+        utc_offset_minutes: 420, // UTC+7
+        constituents: [
+            Constituent { amplitude: 0.30, phase: 305.0 },
+            Constituent { amplitude: 0.12, phase: 335.0 },
+            Constituent { amplitude: 0.06, phase: 283.0 },
+            Constituent { amplitude: 0.55, phase: 175.0 },
+            Constituent { amplitude: 0.35, phase: 155.0 },
+        ],
+    },
+    // South Asia
+    TideStation {
+        name: "Colombo, LK",
+        lat: 6.9,
+        lon: 79.9,
+        z0: 0.35,
+        utc_offset_minutes: 330, // UTC+5:30
+        constituents: [
+            Constituent { amplitude: 0.19, phase: 350.0 },
+            Constituent { amplitude: 0.08, phase: 18.0 },
+            Constituent { amplitude: 0.04, phase: 328.0 },
+            Constituent { amplitude: 0.10, phase: 60.0 },
+            Constituent { amplitude: 0.06, phase: 42.0 },
+        ],
+    },
+    TideStation {
+        name: "Karachi, PK",
+        lat: 24.9,
+        lon: 67.0,
+        z0: 1.30,
+        utc_offset_minutes: 300, // UTC+5
+        constituents: [
+            Constituent { amplitude: 0.80, phase: 345.0 },
+            Constituent { amplitude: 0.36, phase: 12.0 },
+            Constituent { amplitude: 0.17, phase: 322.0 },
+            Constituent { amplitude: 0.40, phase: 52.0 },
+            Constituent { amplitude: 0.22, phase: 35.0 },
+        ],
+    },
+    TideStation {
+        name: "Chennai, IN",
+        lat: 13.1,
+        lon: 80.3,
+        z0: 0.40,
+        utc_offset_minutes: 330, // UTC+5:30
+        constituents: [
+            Constituent { amplitude: 0.28, phase: 342.0 },
+            Constituent { amplitude: 0.12, phase: 8.0 },
+            Constituent { amplitude: 0.06, phase: 320.0 },
+            Constituent { amplitude: 0.06, phase: 55.0 },
+            Constituent { amplitude: 0.04, phase: 38.0 },
+        ],
+    },
     // Oceania
     TideStation {
         name: "Sydney, AU",
@@ -304,6 +573,106 @@ pub const STATIONS: &[TideStation] = &[
             Constituent { amplitude: 0.04, phase: 28.0 },
             Constituent { amplitude: 0.17, phase: 100.0 },
             Constituent { amplitude: 0.09, phase: 80.0 },
+        ],
+    },
+    TideStation {
+        name: "Perth, AU",
+        lat: -31.9,
+        lon: 115.9,
+        z0: 0.45,
+        utc_offset_minutes: 480, // UTC+8
+        constituents: [
+            Constituent { amplitude: 0.17, phase: 200.0 },
+            Constituent { amplitude: 0.06, phase: 230.0 },
+            Constituent { amplitude: 0.04, phase: 178.0 },
+            Constituent { amplitude: 0.18, phase: 300.0 },
+            Constituent { amplitude: 0.11, phase: 280.0 },
+        ],
+    },
+    TideStation {
+        name: "Darwin, AU",
+        lat: -12.5,
+        lon: 130.8,
+        z0: 3.70,
+        utc_offset_minutes: 570, // UTC+9:30
+        constituents: [
+            Constituent { amplitude: 1.82, phase: 245.0 },
+            Constituent { amplitude: 0.85, phase: 275.0 },
+            Constituent { amplitude: 0.37, phase: 222.0 },
+            Constituent { amplitude: 0.58, phase: 330.0 },
+            Constituent { amplitude: 0.32, phase: 310.0 },
+        ],
+    },
+    TideStation {
+        name: "Melbourne, AU",
+        lat: -37.8,
+        lon: 144.9,
+        z0: 0.45,
+        utc_offset_minutes: 600, // UTC+10
+        constituents: [
+            Constituent { amplitude: 0.22, phase: 230.0 },
+            Constituent { amplitude: 0.07, phase: 260.0 },
+            Constituent { amplitude: 0.05, phase: 208.0 },
+            Constituent { amplitude: 0.10, phase: 315.0 },
+            Constituent { amplitude: 0.06, phase: 295.0 },
+        ],
+    },
+    TideStation {
+        name: "Suva, FJ",
+        lat: -18.1,
+        lon: 178.4,
+        z0: 0.80,
+        utc_offset_minutes: 720, // UTC+12
+        constituents: [
+            Constituent { amplitude: 0.45, phase: 260.0 },
+            Constituent { amplitude: 0.14, phase: 290.0 },
+            Constituent { amplitude: 0.09, phase: 238.0 },
+            Constituent { amplitude: 0.10, phase: 30.0 },
+            Constituent { amplitude: 0.06, phase: 10.0 },
+        ],
+    },
+    // Caribbean
+    TideStation {
+        name: "San Juan, PR",
+        lat: 18.5,
+        lon: -66.1,
+        z0: 0.25,
+        utc_offset_minutes: -240, // UTC-4
+        constituents: [
+            Constituent { amplitude: 0.12, phase: 355.0 },
+            Constituent { amplitude: 0.04, phase: 15.0 },
+            Constituent { amplitude: 0.03, phase: 333.0 },
+            Constituent { amplitude: 0.08, phase: 95.0 },
+            Constituent { amplitude: 0.05, phase: 78.0 },
+        ],
+    },
+    TideStation {
+        name: "Havana, CU",
+        lat: 23.1,
+        lon: -82.3,
+        z0: 0.25,
+        utc_offset_minutes: -300, // UTC-5
+        constituents: [
+            Constituent { amplitude: 0.11, phase: 345.0 },
+            Constituent { amplitude: 0.04, phase: 8.0 },
+            Constituent { amplitude: 0.03, phase: 325.0 },
+            Constituent { amplitude: 0.07, phase: 90.0 },
+            Constituent { amplitude: 0.05, phase: 72.0 },
+        ],
+    },
+    // Central America
+    TideStation {
+        name: "Panama City, PA",
+        lat: 9.0,
+        lon: -79.5,
+        z0: 2.50,
+        utc_offset_minutes: -300, // UTC-5
+        constituents: [
+            Constituent { amplitude: 1.55, phase: 130.0 },
+            Constituent { amplitude: 0.55, phase: 155.0 },
+            Constituent { amplitude: 0.32, phase: 108.0 },
+            Constituent { amplitude: 0.28, phase: 210.0 },
+            Constituent { amplitude: 0.18, phase: 195.0 },
         ],
     },
     // South America
@@ -362,6 +731,21 @@ pub const STATIONS: &[TideStation] = &[
             Constituent { amplitude: 0.09, phase: 273.0 },
             Constituent { amplitude: 0.24, phase: 40.0 },
             Constituent { amplitude: 0.16, phase: 20.0 },
+        ],
+    },
+    // North America — Alaska
+    TideStation {
+        name: "Anchorage, US",
+        lat: 61.2,
+        lon: -149.9,
+        z0: 4.60,
+        utc_offset_minutes: -540, // UTC-9
+        constituents: [
+            Constituent { amplitude: 3.50, phase: 178.0 },
+            Constituent { amplitude: 0.80, phase: 198.0 },
+            Constituent { amplitude: 0.72, phase: 155.0 },
+            Constituent { amplitude: 0.65, phase: 280.0 },
+            Constituent { amplitude: 0.38, phase: 260.0 },
         ],
     },
     // Canada
