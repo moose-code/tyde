@@ -4,6 +4,7 @@ use std::io::{self, Write};
 use crate::chart;
 use crate::color;
 use crate::scene;
+use crate::station::TideStation;
 use crate::tide::{self, TideDirection};
 
 use chrono::{DateTime, Local};
@@ -15,6 +16,7 @@ pub fn render_frame(
     height: u16,
     now: DateTime<Local>,
     time_secs: f64,
+    station: &TideStation,
 ) -> io::Result<()> {
     if width < 40 || height < 10 {
         queue!(
@@ -28,9 +30,9 @@ pub fn render_frame(
         return Ok(());
     }
 
-    let tide_height = tide::predict(now);
-    let tide_dir = tide::direction(now);
-    let extreme = tide::next_extreme(now);
+    let tide_height = tide::predict(station, now);
+    let tide_dir = tide::direction(station, now);
+    let extreme = tide::next_extreme(station, now);
 
     // Layout: 1 line info bar, then ocean scene, then chart (4 rows + 1 x-axis)
     let chart_rows: u16 = 5;
@@ -38,7 +40,7 @@ pub fn render_frame(
     let scene_height = scene_height.max(3);
 
     // --- Info bar (row 0) ---
-    render_info_bar(stdout, width, tide_height, tide_dir, &extreme, now)?;
+    render_info_bar(stdout, width, tide_height, tide_dir, &extreme, now, station)?;
 
     // --- Ocean scene (rows 1..1+scene_height) ---
     let grid = scene::render_scene(width, scene_height, tide_height, time_secs);
@@ -61,7 +63,7 @@ pub fn render_frame(
 
     // --- Tide chart (bottom rows) ---
     let chart_top = 1 + scene_height;
-    render_tide_chart(stdout, width, chart_rows, chart_top, now)?;
+    render_tide_chart(stdout, width, chart_rows, chart_top, now, station)?;
 
     // Reset colors at end
     queue!(
@@ -81,6 +83,7 @@ fn render_info_bar(
     dir: TideDirection,
     extreme: &tide::TideExtreme,
     now: DateTime<Local>,
+    station: &TideStation,
 ) -> io::Result<()> {
     queue!(
         stdout,
@@ -96,10 +99,11 @@ fn render_info_bar(
     )?;
 
     // Location
+    let location = format!("  {}", station.name);
     queue!(
         stdout,
         style::SetForegroundColor(color::INFO_DIM),
-        style::Print("  Cape Town, SA"),
+        style::Print(&location),
     )?;
 
     // Separator
@@ -131,7 +135,7 @@ fn render_info_bar(
 
     // Separator + next extreme
     let label = if extreme.is_high { "Next High" } else { "Next Low" };
-    let time_str = extreme.time.format("%H:%M").to_string();
+    let time_str = extreme.time.with_timezone(&station.timezone()).format("%H:%M").to_string();
     let diff = extreme.time - now;
     let diff_h = diff.num_hours();
     let diff_m = diff.num_minutes() % 60;
@@ -147,7 +151,7 @@ fn render_info_bar(
 
     // Fill rest of line with background
     // Calculate how much we've written (approximate)
-    let written = 5 + 15 + 5 + 12 + 5 + dir.as_str().len() + 5 + label.len() + time_str.len() + countdown.len() + 5;
+    let written = 5 + location.len() + 5 + 12 + 5 + dir.as_str().len() + 5 + label.len() + time_str.len() + countdown.len() + 5;
     let remaining = (width as usize).saturating_sub(written);
     if remaining > 0 {
         queue!(stdout, style::Print(" ".repeat(remaining)))?;
@@ -162,6 +166,7 @@ fn render_tide_chart(
     chart_rows: u16,
     top: u16,
     now: DateTime<Local>,
+    station: &TideStation,
 ) -> io::Result<()> {
     let label_width: usize = 6; // "1.5m⡇" = 5 chars + separator
     let chart_width = (width as usize).saturating_sub(label_width + 1);
@@ -171,8 +176,8 @@ fn render_tide_chart(
         return Ok(());
     }
 
-    let (lines, now_col) = chart::render_chart(now, chart_width, chart_height);
-    let y_labels = chart::y_axis_labels(chart_height, now);
+    let (lines, now_col) = chart::render_chart(station, now, chart_width, chart_height);
+    let y_labels = chart::y_axis_labels(station, chart_height, now);
 
     let bg = Color::Rgb { r: 8, g: 8, b: 20 };
 
@@ -237,9 +242,8 @@ fn render_tide_chart(
         }
     }
 
-    // Place ▲ at the current time position
-    let now_hour_f = now.format("%H").to_string().parse::<f64>().unwrap_or(0.0)
-        + now.format("%M").to_string().parse::<f64>().unwrap_or(0.0) / 60.0;
+    // Place ▲ at the current time position (in station-local time)
+    let now_hour_f = chart::station_hour(station, now);
     let now_marker_pos = (now_hour_f / 24.0 * chart_width as f64) as usize;
     if now_marker_pos < chart_width {
         x_chars[now_marker_pos] = ('▲', true);
