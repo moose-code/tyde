@@ -17,12 +17,12 @@ A live ASCII ocean tide visualizer for your terminal. Real tidal physics, 25 wor
 
 ### macOS (Apple Silicon)
 ```bash
-curl -sSL https://github.com/moose-code/tyde/releases/latest/download/tyde-macos-aarch64 -o /usr/local/bin/tyde && chmod +x /usr/local/bin/tyde
+sudo curl -sSL https://github.com/moose-code/tyde/releases/latest/download/tyde-macos-aarch64 -o /usr/local/bin/tyde && sudo chmod +x /usr/local/bin/tyde
 ```
 
 ### macOS (Intel)
 ```bash
-curl -sSL https://github.com/moose-code/tyde/releases/latest/download/tyde-macos-x86_64 -o /usr/local/bin/tyde && chmod +x /usr/local/bin/tyde
+sudo curl -sSL https://github.com/moose-code/tyde/releases/latest/download/tyde-macos-x86_64 -o /usr/local/bin/tyde && sudo chmod +x /usr/local/bin/tyde
 ```
 
 ### Linux (x86_64)
